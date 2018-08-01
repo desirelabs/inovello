@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Row, Col } from 'reactstrap'
 import CreateColumn from './CreateColumn'
+import ColumnItem from './ColumnItem'
 
 class CardsColumns extends Component {
   constructor() {
@@ -14,9 +15,11 @@ class CardsColumns extends Component {
 
   addColumn = () => {
     if (this.state.inputValue) {
-      this.setState({
-        columns: [...this.state.columns, this.state.inputValue],
-        inputValue: ''
+      this.setState(prevState => {
+        return {
+          columns: [...prevState.columns, this.state.inputValue],
+          inputValue: ''
+        }
       })
     }
   }
@@ -38,7 +41,7 @@ class CardsColumns extends Component {
       <Row>
         {this.state.columns.map((column, i) => (
           <Col xs={3} key={i}>
-            {column}
+            <ColumnItem column={column} />
           </Col>
         ))}
         <Col xs={3}>
