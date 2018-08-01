@@ -17,7 +17,7 @@ class CardsColumns extends Component {
     if (this.state.inputValue) {
       this.setState(prevState => {
         return {
-          columns: [...prevState.columns, this.state.inputValue],
+          columns: [...prevState.columns, { name: this.state.inputValue }],
           inputValue: ''
         }
       })
