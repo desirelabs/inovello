@@ -24,7 +24,7 @@ class CardsColumns extends Component<{}, State> {
     }
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps: Object, prevState: Object) {
     if (!isEqual(prevState.columns, this.state.columns)) {
       this.persist()
     }
@@ -60,23 +60,23 @@ class CardsColumns extends Component<{}, State> {
     }
   }
 
-  onToggle = bool => {
+  onToggle = (bool: boolean) => {
     this.setState({ toggled: bool })
   }
 
-  onChange = e => {
+  onChange = (e: Object) => {
     this.setState({
       inputValue: e.target.value
     })
   }
 
-  onUpdate = col => {
+  onUpdate = (col: Object) => {
     this.setState({
       columns: this.state.columns.map(column => (column.id === col.id ? col : column))
     })
   }
 
-  onRemove = id => {
+  onRemove = (id: string) => {
     this.setState({
       columns: this.state.columns.filter(column => column.id !== id)
     })

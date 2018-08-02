@@ -1,11 +1,12 @@
 import React from 'react'
-import { Input, Button } from 'reactstrap'
+import { Button } from 'reactstrap'
+import Input from '../HOC/Input'
 
-const CreateColumn = ({ columnsCount, addColumn, onChange, inputValue, onToggle, toggled }) => (
+const CreateColumn = ({ columnsCount, addColumn, onChange, inputValue, onToggle, toggled, refValue }) => (
   <div>
     {toggled ? (
       <div>
-        <Input onChange={onChange} value={inputValue} onKeyPress={e => e.key === 'Enter' && addColumn()} />
+        <Input onChange={onChange} value={inputValue} onKeyPress={addColumn} onBlur={onToggle} toggled={toggled} />
         <Button onClick={() => addColumn()}>Ajouter une liste</Button>{' '}
         <a href="#" onClick={() => onToggle(false)}>
           &times;

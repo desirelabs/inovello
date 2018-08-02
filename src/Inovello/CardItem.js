@@ -1,7 +1,8 @@
 import React, { Component, createRef } from 'react'
-import { Input } from 'reactstrap'
 import isEmpty from 'lodash/isEmpty'
 import uuid from 'uuid/v4'
+
+import Input from '../HOC/Input'
 
 class CardItem extends Component {
   constructor(props) {
@@ -10,12 +11,10 @@ class CardItem extends Component {
       toggled: !!this.props.card.text === false,
       card: {}
     }
-    this.inputRef = createRef()
   }
 
   componentDidMount() {
     this.setState({ card: this.props.card })
-    this.inputRef.current && this.inputRef.current.focus()
   }
 
   onToggle = bool => {
@@ -34,27 +33,33 @@ class CardItem extends Component {
 
   validateValue = () => {
     this.onToggle()
-    this.props.onUpdate(this.state.card)
+    this.state.card.text && this.props.onUpdate(this.state.card)
   }
 
   render() {
     return (
-      <div>
+      <div style={card}>
         {!this.state.toggled ? (
           <div onDoubleClick={() => this.onToggle(true)}>{this.state.card.text}</div>
         ) : (
           <Input
             type={'textarea'}
             value={this.state.card.text}
-            onKeyPress={e => e.key === 'Enter' && this.validateValue()}
-            innerRef={this.inputRef}
-            onChange={e => this.onUpdate(e)}
-            onBlur={() => this.onToggle(false)}
+            onKeyPress={this.validateValue}
+            onChange={this.onUpdate}
+            onBlur={this.onToggle}
+            toggled={this.state.toggled}
           />
         )}
       </div>
     )
   }
+}
+
+const card = {
+  borderRadius: 3,
+  backgroundColor: '#fff',
+  padding: 3
 }
 
 export default CardItem

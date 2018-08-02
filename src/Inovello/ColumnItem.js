@@ -1,32 +1,25 @@
-import React, { Component, Fragment } from 'react'
-import { Input } from 'reactstrap'
+import React, { Component, Fragment, createRef } from 'react'
 import uuid from 'uuid/v4'
+
+import Input from '../HOC/Input'
 
 // Components
 import CardItem from './CardItem'
 import CreateCard from './CreateCard'
 
 class ColumnItem extends Component {
-  state = {
-    column: {},
-    toggled: false
+  constructor() {
+    super()
+    this.state = {
+      column: {},
+      toggled: false
+    }
   }
 
   componentDidMount() {
     this.setState({
       column: this.props.column
     })
-    window.document.addEventListener('keyup', e => {
-      if (this.state.toggled && e.which === 27) {
-        this.setState({
-          toggled: false
-        })
-      }
-    })
-  }
-
-  componentWillUnmount() {
-    window.document.removeEventListener('keyup')
   }
 
   onToggle = bool => {
@@ -49,7 +42,10 @@ class ColumnItem extends Component {
   onUpdate = card => {
     this.setState(
       {
-        column: { ...this.state.column, cards: [...this.state.column.cards, card] }
+        column: {
+          ...this.state.column,
+          cards: this.state.column.cards.map(c => (c.id === card.id ? card : c))
+        }
       },
       () => this.validateValue()
     )
@@ -57,9 +53,7 @@ class ColumnItem extends Component {
 
   onCreate = () => {
     this.setState({
-      column: this.state.column.cards
-        ? { ...this.state.column, cards: [...this.state.column.cards, { id: uuid(), text: '' }] }
-        : { ...this.state.column, cards: [{ id: uuid(), text: '' }] }
+      column: { ...this.state.column, cards: [...this.state.column.cards, { id: uuid(), text: '' }] }
     })
   }
 
@@ -71,8 +65,10 @@ class ColumnItem extends Component {
           {this.state.toggled ? (
             <Input
               value={this.state.column.name}
-              onChange={e => this.updateValue(e)}
-              onKeyPress={e => e.key === 'Enter' && this.validateValue()}
+              onChange={this.updateValue}
+              onKeyPress={this.validateValue}
+              onBlur={this.onToggle}
+              toggled={this.state.toggled}
             />
           ) : (
             <Fragment>
@@ -102,7 +98,9 @@ const columnStyle = {
   borderRadius: 3,
   minHeight: 74,
   display: 'flex',
-  flexFlow: 'column nowrap'
+  flexFlow: 'column nowrap',
+  padding: 4,
+  fontSize: 14
 }
 
 const col = {
