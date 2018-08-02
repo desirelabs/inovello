@@ -34,25 +34,13 @@ class CardsColumns extends Component<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps: Object, prevState: Object) {
-    if (!isEqual(prevProps.columns, this.props.columns)) {
-      this.persist()
-    }
-  }
-
-  persist = () => {
-    // const serialized = JSON.stringify(this.props.columns)
-    // window.sessionStorage.setItem('inovello', serialized)
-  }
-
   componentDidMount() {
     this.props.initColumns()
   }
 
   addColumn = () => {
     this.props.addColumn({
-      name: this.state.inputValue,
-      cards: []
+      name: this.state.inputValue
     })
 
     this.setState({ inputValue: '' })
