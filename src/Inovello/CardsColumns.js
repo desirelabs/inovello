@@ -4,60 +4,66 @@ import { Row, Col } from 'reactstrap'
 import uuid from 'uuid/v4'
 import isEqual from 'lodash/isEqual'
 
+// Redux
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { initColumns } from '../store/column/actionsCreators'
+
 // Components
 import CreateColumn from './CreateColumn'
 import ColumnItem from './ColumnItem'
 
-type State = {
+type Props = {
   columns: Array<Object>,
+  initColumns: Function
+}
+
+type State = {
   inputValue: string,
   toggled: boolean
 }
 
-class CardsColumns extends Component<{}, State> {
+class CardsColumns extends Component<Props, State> {
   constructor() {
     super()
     this.state = {
-      columns: [],
       inputValue: '',
       toggled: false
     }
   }
 
   componentDidUpdate(prevProps: Object, prevState: Object) {
-    if (!isEqual(prevState.columns, this.state.columns)) {
+    if (!isEqual(prevProps.columns, this.props.columns)) {
       this.persist()
     }
   }
 
   persist = () => {
-    const serialized = JSON.stringify(this.state.columns)
+    const serialized = JSON.stringify(this.props.columns)
     window.sessionStorage.setItem('inovello', serialized)
   }
 
   componentDidMount() {
     const serialized = window.sessionStorage.getItem('inovello')
     if (serialized) {
-      this.setState({
-        columns: JSON.parse(serialized)
-      })
+      this.props.initColumns([{ name: 'coucou', cards: [] }])
     }
   }
 
   addColumn = () => {
-    if (this.state.inputValue) {
-      this.setState({
-        columns: [
-          ...this.state.columns,
-          {
-            id: uuid(),
-            name: this.state.inputValue,
-            cards: []
-          }
-        ],
-        inputValue: ''
-      })
-    }
+    // if (this.state.inputValue) {
+    //   this.setState({
+    //     columns: [
+    //       ...this.props.columns,
+    //       {
+    //         id: uuid(),
+    //         name: this.state.inputValue,
+    //         cards: []
+    //       }
+    //     ],
+    //     inputValue: ''
+    //   })
+    // }
   }
 
   onToggle = (bool: boolean) => {
@@ -71,29 +77,29 @@ class CardsColumns extends Component<{}, State> {
   }
 
   onUpdate = (col: Object) => {
-    this.setState({
-      columns: this.state.columns.map(column => (column.id === col.id ? col : column))
-    })
+    // this.setState({
+    //   columns: this.props.columns.map(column => (column.id === col.id ? col : column))
+    // })
   }
 
   onRemove = (id: string) => {
-    this.setState({
-      columns: this.state.columns.filter(column => column.id !== id)
-    })
+    // this.setState({
+    //   columns: this.props.columns.filter(column => column.id !== id)
+    // })
   }
 
   render() {
     return (
       <Row>
-        {this.state.columns &&
-          this.state.columns.map((column, i) => (
+        {this.props.columns &&
+          this.props.columns.map((column, i) => (
             <Col xs={3} key={i}>
               <ColumnItem column={column} onRemove={this.onRemove} onUpdate={this.onUpdate} />
             </Col>
           ))}
         <Col xs={3}>
           <CreateColumn
-            columnsCount={this.state.columns && this.state.columns.length}
+            columnsCount={this.props.columns && this.props.columns.length}
             addColumn={this.addColumn}
             onChange={this.onChange}
             inputValue={this.state.inputValue}
@@ -106,4 +112,19 @@ class CardsColumns extends Component<{}, State> {
   }
 }
 
-export default CardsColumns
+const mapStateToProps = (state: Object) => {
+  return {
+    columns: state.columns
+  }
+}
+
+const mapDispatchToProps = (dispatch: Function) => {
+  return {
+    initColumns: bindActionCreators(initColumns, dispatch)
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CardsColumns)
