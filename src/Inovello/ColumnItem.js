@@ -22,6 +22,8 @@ class ColumnItem extends Component {
     })
   }
 
+  componentDidUpdate(prevProps, prevState) {}
+
   onToggle = bool => {
     this.setState({
       toggled: bool

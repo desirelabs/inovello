@@ -1,13 +1,12 @@
 // @flow
 import React, { Component } from 'react'
 import { Row, Col } from 'reactstrap'
-import uuid from 'uuid/v4'
 import isEqual from 'lodash/isEqual'
 
 // Redux
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { initColumns } from '../store/column/actionsCreators'
+import { initColumns, addColumn, updateColumn, removeColumn } from '../store/column/actionsCreators'
 
 // Components
 import CreateColumn from './CreateColumn'
@@ -15,7 +14,10 @@ import ColumnItem from './ColumnItem'
 
 type Props = {
   columns: Array<Object>,
-  initColumns: Function
+  initColumns: Function,
+  addColumn: Function,
+  updateColumn: Function,
+  removeColumn: Function
 }
 
 type State = {
@@ -39,31 +41,21 @@ class CardsColumns extends Component<Props, State> {
   }
 
   persist = () => {
-    const serialized = JSON.stringify(this.props.columns)
-    window.sessionStorage.setItem('inovello', serialized)
+    // const serialized = JSON.stringify(this.props.columns)
+    // window.sessionStorage.setItem('inovello', serialized)
   }
 
   componentDidMount() {
-    const serialized = window.sessionStorage.getItem('inovello')
-    if (serialized) {
-      this.props.initColumns([{ name: 'coucou', cards: [] }])
-    }
+    this.props.initColumns()
   }
 
   addColumn = () => {
-    // if (this.state.inputValue) {
-    //   this.setState({
-    //     columns: [
-    //       ...this.props.columns,
-    //       {
-    //         id: uuid(),
-    //         name: this.state.inputValue,
-    //         cards: []
-    //       }
-    //     ],
-    //     inputValue: ''
-    //   })
-    // }
+    this.props.addColumn({
+      name: this.state.inputValue,
+      cards: []
+    })
+
+    this.setState({ inputValue: '' })
   }
 
   onToggle = (bool: boolean) => {
@@ -77,23 +69,19 @@ class CardsColumns extends Component<Props, State> {
   }
 
   onUpdate = (col: Object) => {
-    // this.setState({
-    //   columns: this.props.columns.map(column => (column.id === col.id ? col : column))
-    // })
+    this.props.updateColumn(col)
   }
 
   onRemove = (id: string) => {
-    // this.setState({
-    //   columns: this.props.columns.filter(column => column.id !== id)
-    // })
+    this.props.removeColumn(id)
   }
 
   render() {
     return (
       <Row>
         {this.props.columns &&
-          this.props.columns.map((column, i) => (
-            <Col xs={3} key={i}>
+          this.props.columns.map(column => (
+            <Col xs={3} key={column.id}>
               <ColumnItem column={column} onRemove={this.onRemove} onUpdate={this.onUpdate} />
             </Col>
           ))}
@@ -120,7 +108,10 @@ const mapStateToProps = (state: Object) => {
 
 const mapDispatchToProps = (dispatch: Function) => {
   return {
-    initColumns: bindActionCreators(initColumns, dispatch)
+    initColumns: bindActionCreators(initColumns, dispatch),
+    addColumn: bindActionCreators(addColumn, dispatch),
+    updateColumn: bindActionCreators(updateColumn, dispatch),
+    removeColumn: bindActionCreators(removeColumn, dispatch)
   }
 }
 
