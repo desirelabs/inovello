@@ -1,9 +1,10 @@
 import uuid from 'uuid/v4'
 
 import { ADD_COLUMN, INIT_COLUMNS, UPDATE_COLUMN, REMOVE_COLUMN } from './actions'
+import { REMOVE_CARD } from '../card/actions'
 
 const persist = columns => {
-  window.sessionStorage.setItem('inovello', JSON.stringify(columns))
+  window.sessionStorage.setItem('inovello_columns', JSON.stringify(columns))
 }
 
 export const addColumn = column => {
@@ -31,7 +32,7 @@ export const updateColumn = column => {
 }
 
 export const initColumns = () => {
-  const serialized = window.sessionStorage.getItem('inovello')
+  const serialized = window.sessionStorage.getItem('inovello_columns')
   if (serialized) {
     const columns = JSON.parse(serialized)
     return dispatch => {

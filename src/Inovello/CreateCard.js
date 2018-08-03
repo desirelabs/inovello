@@ -1,9 +1,29 @@
 import React from 'react'
 
-const CreateCard = ({ onCreate, cardCount }) => (
-  <a href="#" onClick={() => onCreate()}>
+// Redux
+import { connect } from 'react-redux'
+import { bindActionCreators } from '../../../../../.cache/typescript/2.9/node_modules/redux'
+import { addCard } from '../store/card/actionsCreators'
+
+const CreateCard = ({ addCard, colId, cardCount }) => (
+  <a href="#" onClick={() => addCard({ text: '', colId })}>
     {cardCount === 0 ? '+ Créer une carte' : '+ Créer une nouvelle carte'}
   </a>
 )
 
-export default CreateCard
+const mapStateToProps = state => {
+  return {
+    card: state.card
+  }
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addCard: bindActionCreators(addCard, dispatch)
+  }
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CreateCard)

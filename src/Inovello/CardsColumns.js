@@ -7,13 +7,20 @@ import isEqual from 'lodash/isEqual'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { initColumns, addColumn, updateColumn, removeColumn } from '../store/column/actionsCreators'
+import { initCards, removeCard } from '../store/card/actionsCreators'
 
 // Components
 import CreateColumn from './CreateColumn'
 import ColumnItem from './ColumnItem'
 
+// Types
+import { Card, Column } from './Types'
+
 type Props = {
-  columns: Array<Object>,
+  columns: Array<Column>,
+  cards: Array<Card>,
+  removeCard: Function,
+  initCards: Function,
   initColumns: Function,
   addColumn: Function,
   updateColumn: Function,
@@ -36,6 +43,7 @@ class CardsColumns extends Component<Props, State> {
 
   componentDidMount() {
     this.props.initColumns()
+    this.props.initCards()
   }
 
   addColumn = () => {
@@ -62,17 +70,17 @@ class CardsColumns extends Component<Props, State> {
 
   onRemove = (id: string) => {
     this.props.removeColumn(id)
+    this.props.cards.filter(c => c.colId === id).forEach(el => this.props.removeCard(el.id))
   }
 
   render() {
     return (
       <Row>
-        {this.props.columns &&
-          this.props.columns.map(column => (
-            <Col xs={3} key={column.id}>
-              <ColumnItem column={column} onRemove={this.onRemove} onUpdate={this.onUpdate} />
-            </Col>
-          ))}
+        {this.props.columns.map(column => (
+          <Col xs={3} key={column.id}>
+            <ColumnItem column={column} onRemove={this.onRemove} colId={column.id} />
+          </Col>
+        ))}
         <Col xs={3}>
           <CreateColumn
             columnsCount={this.props.columns && this.props.columns.length}
@@ -90,16 +98,19 @@ class CardsColumns extends Component<Props, State> {
 
 const mapStateToProps = (state: Object) => {
   return {
-    columns: state.columns
+    columns: state.columns,
+    cards: state.cards
   }
 }
 
 const mapDispatchToProps = (dispatch: Function) => {
   return {
     initColumns: bindActionCreators(initColumns, dispatch),
+    initCards: bindActionCreators(initCards, dispatch),
     addColumn: bindActionCreators(addColumn, dispatch),
     updateColumn: bindActionCreators(updateColumn, dispatch),
-    removeColumn: bindActionCreators(removeColumn, dispatch)
+    removeColumn: bindActionCreators(removeColumn, dispatch),
+    removeCard: bindActionCreators(removeCard, dispatch)
   }
 }
 

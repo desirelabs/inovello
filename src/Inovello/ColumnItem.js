@@ -7,6 +7,11 @@ import Input from '../HOC/Input'
 import CardItem from './CardItem'
 import CreateCard from './CreateCard'
 
+// Redux
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { addCard } from '../store/card/actionsCreators'
+
 class ColumnItem extends Component {
   constructor() {
     super()
@@ -38,7 +43,6 @@ class ColumnItem extends Component {
 
   validateValue = () => {
     this.onToggle(false)
-    this.props.onUpdate(this.state.column)
   }
 
   onUpdate = card => {
@@ -54,9 +58,7 @@ class ColumnItem extends Component {
   }
 
   onCreate = () => {
-    this.setState({
-      column: { ...this.state.column, cards: [...this.state.column.cards, { id: uuid(), text: '' }] }
-    })
+    this.props.addCard({ id: uuid(), text: '', colId: this.props.colId })
   }
 
   render() {
@@ -84,14 +86,30 @@ class ColumnItem extends Component {
           )}
         </div>
         <div>
-          {this.state.column.cards &&
-            this.state.column.cards.map((card, i) => <CardItem key={i} card={card} onUpdate={this.onUpdate} />)}
+          {this.props.cards.filter(c => c.colId === this.props.colId).map(card => {
+            return <CardItem key={card.id} card={card} />
+          })}
         </div>
         <div style={{ marginTop: 'auto' }}>
-          <CreateCard onCreate={this.onCreate} cardCount={this.state.column.cards && this.state.column.cards.length} />
+          <CreateCard
+            colId={this.state.column.id}
+            cardCount={this.state.column.cards && this.state.column.cards.length}
+          />
         </div>
       </div>
     )
+  }
+}
+
+const mapStateToProps = (state: Object) => {
+  return {
+    cards: state.cards
+  }
+}
+
+const mapDispatchToProps = (dispatch: Function) => {
+  return {
+    addCard: bindActionCreators(addCard, dispatch)
   }
 }
 
@@ -109,4 +127,7 @@ const col = {
   background: 'red'
 }
 
-export default ColumnItem
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ColumnItem)
