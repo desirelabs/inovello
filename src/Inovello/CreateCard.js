@@ -2,7 +2,7 @@ import React from 'react'
 
 // Redux
 import { connect } from 'react-redux'
-import { bindActionCreators } from '../../../../../.cache/typescript/2.9/node_modules/redux'
+import { bindActionCreators } from 'redux'
 import { addCard } from '../store/card/actionsCreators'
 
 const CreateCard = ({ addCard, colId, cardCount }) => (
