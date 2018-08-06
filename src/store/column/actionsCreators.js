@@ -7,6 +7,12 @@ const persist = columns => {
   window.sessionStorage.setItem('inovello_columns', JSON.stringify(columns))
 }
 
+export const setOrdered = columns => {
+  return dispatch => {
+    dispatch({ type: INIT_COLUMNS, columns })
+  }
+}
+
 export const addColumn = column => {
   return (dispatch, getState) => {
     dispatch({ type: ADD_COLUMN, column: { id: uuid(), ...column } })
