@@ -1,0 +1,5 @@
+export const ADD_CARD = 'ADD_CARD'
+export const REMOVE_CARD = 'REMOVE_CARD'
+export const UPDATE_CARD = 'UPDATE_CARD'
+export const CREATE_CARD = 'CREATE_CARD'
+export const INIT_CARDS = 'INIT_CARDS'

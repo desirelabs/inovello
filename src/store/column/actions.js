@@ -1,0 +1,5 @@
+export const ADD_COLUMN = 'ADD_COLUMN'
+export const UPDATE_COLUMN = 'UPDATE_COLUMN'
+export const REMOVE_COLUMN = 'REMOVE_COLUMN'
+export const INIT_COLUMNS = 'INIT_COLUMNS'
+export const SET_ORDERD = 'SET_ORDERD'
