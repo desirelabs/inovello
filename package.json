@@ -2,6 +2,7 @@
   "name": "inovello",
   "version": "0.1.0",
   "private": true,
+  "homepage" : "https://desirelabs.github.io/inovello",
   "dependencies": {
     "bootstrap": "^4.1.3",
     "flow-bin": "^0.77.0",
